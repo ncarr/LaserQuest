@@ -1,0 +1,32 @@
+{
+  "name": "laserquest",
+  "version": "1.0.0",
+  "description": "The backend and website for a Laser Quest science project",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ncarr/LaserQuest.git"
+  },
+  "keywords": [
+    "laser",
+    "quest",
+    "laserquest",
+    "express"
+  ],
+  "author": "Nicholas Carr, Misha Larionov, Julia Collins",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ncarr/LaserQuest/issues"
+  },
+  "homepage": "https://github.com/ncarr/LaserQuest#readme",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "dotenv": "^2.0.0",
+    "express": "^4.14.0",
+    "mongoose": "^4.7.2"
+  }
+}
