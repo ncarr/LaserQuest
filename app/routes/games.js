@@ -1,6 +1,7 @@
 var express = require("express");
 var Game = require("../models/game");
 var User = require("../models/user");
+var Tag = require("../models/tag");
 var router = express.Router();
 router.route('/')
     // This runs when you send a post request to /users
@@ -17,7 +18,7 @@ router.route('/')
             res.json({ message: 'Game created', _id: game._id, start_time: req.body.start_time, end_time: req.body.end_time, __v: game.__v });
         });
     })
-    // List all users
+    // List all games
     .get(function(req, res) {
         Game.find(function(err, games) {
             if (err)
@@ -27,11 +28,11 @@ router.route('/')
         });
     });
 
-// All actions for an individual user
+// All actions for a game
 router.route('/:game_id')
-    // Get the user
+    // Get the game
     .get(function(req, res) {
-        // Find the user by their id
+        // Find the game by its id
         Game.findById(req.params.game_id, function(err, game) {
             if (err)
                 res.send(err);
@@ -47,7 +48,7 @@ router.route('/:game_id')
             game.start_time = req.body.start_time;  // Change their start time to whatever is requested
             game.end_time = req.body.end_time;  // Change their end time to whatever is requested
 
-            // Save the user
+            // Save the game
             game.save(function(err) {
                 if (err)
                     res.send(err);
@@ -56,15 +57,28 @@ router.route('/:game_id')
             });
         });
     })
-    // Delete the user with this id
+    // Delete the game with this id
     .delete(function(req, res) {
-        Game.remove({
-            _id: req.params.game_id
-        }, function(err, game) {
-            if (err)
-                res.send(err);
+        Game.findById(req.params.game_id, function(err, game) {
+            Tag.remove({
+                _sender: { $in : game.players }
+            }, function(err, tags) {
+                if (err)
+                    res.send(err);
 
-            res.json({ message: 'Game deleted' });
+                User.update({_id: { $in: game.players }}, {$pullAll: {games: [game._id]}}, function (err, n) {
+                  if (err)
+                      res.send(err);
+                });
+                Game.remove({
+                    _id: req.params.game_id
+                }, function(err, game) {
+                      if (err)
+                          res.send(err);
+
+                      res.json({ message: 'Game deleted' });
+                });
+            });
         });
     });
 router.route('/:game_id/users')
@@ -88,7 +102,6 @@ router.route('/:game_id/users')
                 if (err)
                     res.send(err);
                 res.json(Object.assign({ message: 'User created and added to game'}, user.toJSON()));
-                console.log(user);
             });
         });
     })
@@ -101,4 +114,27 @@ router.route('/:game_id/users')
             res.json(users);
         });
     });
+router.route('/:game_id/tags')
+    // When you want to find a tag shot in the game
+    .get(function(req, res) {
+        Game.findById(req.params.game_id, function(err, game) {
+            Tag.find({ _sender: { $in : game.players }, _receiver: null }, function(err, tags) {
+                if (err)
+                    res.send(err);
+
+                res.json(tags);
+            });
+        });
+    });
+router.route('/:game_id/tags/:tag_id')
+    // When you want to find a tag shot in the game
+    .get(function(req, res) {
+        Tag.findById(req.params.tag_id, function(err, tag) {
+            if (err)
+                res.send(err);
+
+            res.json(tag);
+        });
+    });
+
 module.exports = router;

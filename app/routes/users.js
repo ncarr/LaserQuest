@@ -1,6 +1,7 @@
 var express = require("express");
 var User = require("../models/user");
 var Game = require("../models/game");
+var Tag = require("../models/tag");
 var router = express.Router();
 router.route('/')
     // This runs when you send a post request to /users
@@ -100,8 +101,69 @@ router.route("/:user_id/games/:game_id")
         });
     })
     .delete(function(req, res) {
-        User.update({_id: req.params.user_id}, {$pullAll: {games: [req.params.game_id]}});
-        Game.update({_id: req.params.game_id}, {$pullAll: {players: [req.params.user_id]}});
-        res.json({ message: 'User removed from game'});
+        User.update({_id: req.params.user_id}, {$pull: {games: req.params.game_id}}, function (err, n) {
+          if (err)
+              res.send(err);
+
+          Game.update({_id: req.params.game_id}, {$pull: {players: req.params.user_id}}, function (err, n) {
+            if (err)
+                res.send(err);
+
+            res.json({ message: 'User removed from game'});
+          });
+        });
+    });
+router.route("/:user_id/tags")
+    .get(function(req, res) {
+        Tag.find({$or: [{_sender: req.params.user_id }, {_receiver: req.params.user_id}]}, function(err, tag) {
+            if (err)
+                res.send(err);
+
+            res.json(tag);
+        })
+    });
+router.route("/:user_id/tags/outgoing")
+    // Create a tag, it may or may not reach anyone
+    .post(function(req, res) {
+        var tag = new Tag({ _sender: req.params.user_id, time: req.body.time });      // create a new tag and set the time
+
+        // save the tag and check for errors
+        tag.save(function(err) {
+            if (err)
+                res.send(err);
+
+            res.json(Object.assign({ message: 'Tag uploaded'}, tag.toJSON()));
+        });
+    })
+    .get(function(req, res) {
+        Tag.find({ _sender: req.params.user_id }, function(err, tag) {
+            if (err)
+                res.send(err);
+
+            res.json(tag);
+        })
+    });
+router.route("/:user_id/tags/incoming")
+    .get(function(req, res) {
+        Tag.find({ _receiver: req.params.user_id }, function(err, tag) {
+            if (err)
+                res.send(err);
+
+            res.json(tag);
+        })
+    })
+    // You were tagged and want to upload it
+    .post(function(req, res) {
+        Tag.findById(req.body.tag_id, function (err, tag) {
+            tag._receiver = req.params.user_id;
+
+            // save the tag and check for errors
+            tag.save(function(err) {
+                if (err)
+                    res.send(err);
+
+                res.json(Object.assign({ message: 'Successfully tagged'}, tag.toJSON()));
+            });
+        });
     });
 module.exports = router;
