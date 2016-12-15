@@ -1,0 +1,176 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta content="IE=Edge" http-equiv="X-UA-Compatible">
+<meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0" name="viewport">
+<link rel="shortcut icon" href="/static/images/header/icon.png">
+  <title>Waymo</title>
+  <meta property="og:title" content="Waymo">
+<meta property="og:url" content="https://waymo.com/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://waymo.com/static/images/banner.jpg">
+<meta property="og:site_name" content="Waymo">
+<meta name="description" content="Waymo—formerly the Google self-driving car project—stands for a new way forward in mobility. Our mission is to make it safe and easy for people and things move around.">
+<meta property="og:description" content="Waymo—formerly the Google self-driving car project—stands for a new way forward in mobility. Our mission is to make it safe and easy for people and things move around.">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/main.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-touch.min.js"></script>
+<script src="/static/js/main-5c7792a4518709fee8cb8216248ba988.min.js"></script>
+<script>
+  way.initVideoFallback({
+    imageSelector: '.ak-video-fallback .ak-video-fallback__image',
+    breakpoint: 812
+  });
+</script>
+<script src="//www.google.com/js/gweb/analytics/autotrack.js"></script>
+<script>
+  var autotrack = new gweb.analytics.AutoTrack({profile: 'UA-62642502-1'});
+</script>
+</head>
+<body class="page page--home" ng-class="{'page--menu-toggled': $root.menuToggled}">
+<div class="header header--fade-in">
+  <div class="grid grid--align-space-between grid--valign-middle">
+    <div class="grid__item grid__item--logo">
+      <a class="header__logo" href="/"><img src="/static/images/logo.svg"></a>
+    </div>
+    <div class="grid__item grid__item--nav">
+      <a class="nav-toggle" ng-click="$root.menuToggled = !$root.menuToggled">
+        <div class="nav-toggle__icon"></div>
+      </a>
+
+      <div class="nav">
+        <div class="nav__item ">
+          <a href="/journey/">Journey</a>
+        </div>
+        <div class="nav__item ">
+          <a href="/tech/">Technology</a>
+        </div>
+        <div class="nav__item ">
+          <a href="/ontheroad/">On the Road</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="section__brand-video">
+  <div class="ak-video-fallback section__bg-video section__brand-video__wrap">
+    <video autoplay>
+    <source src="https://storage.googleapis.com/sdc-prod/v1/out.mp4" type="video/mp4">
+    </video>
+  </div>
+  <script>
+    window.setTimeout(function() {
+      var el = document.querySelector('.section__brand-video__wrap');
+      el.classList.add('section__brand-video__wrap--hidden');
+      var heroVideo = document.getElementById('hero-video');
+      heroVideo.play();
+      var heroContainer = document.querySelector('.section--home-hero--hidden');
+      heroContainer.classList.remove('section--home-hero--hidden');
+      var headerEl = document.querySelector('.header--fade-in');
+        headerEl.classList.remove('header--fade-in');
+      }, 4000);
+    </script>
+</div>
+
+<div class="partial partial--home-hero section section--home-hero section--home-hero--hidden">
+  <div class="section__wrap contained">
+    <div class="section__title">We’re building a<br> safer driver for everyone</div>
+    <div class="section__subtitle"></div>
+    <div class="section__cta">
+      <a class="btn btn--cta btn--video btn--white" data-ak-youtubemodal-video-id="uHbMt6WDhQ8">Watch Video</a>
+    </div>
+  </div>
+  <div class="ak-video-fallback section__bg-video">
+    <video loop id="hero-video">
+    <source src="https://storage.googleapis.com/sdc-prod/v1/website-video_v02.mp4" type="video/mp4">
+    <source src="https://storage.googleapis.com/sdc-prod/v1/website-video_v02.webm" type="video/webm">
+    </video>
+    <img src="https://storage.googleapis.com/sdc-prod/v1/waymo_video.jpg" class="ak-video-fallback__image">
+  </div>
+  <div class="section__arrow anim-fade-down">
+    <a class="section__arrow__arrow" data-scroll href="#technology"></a>
+  </div>
+</div><div class="section section--ontheroad partial--ontheroad" id="technology">
+  <div class="contained">
+    <div class="section__body">With fully self-driving technology, you’ll be able to get where you want to go at the push of a button—without the need for a person at the wheel.</div>
+    <div class="section__cta">
+      <a class="btn btn--cta btn--cyan" href="/tech/">Our Technology</a>
+    </div>
+  </div>
+</div><div class="section section--image-caption" id="">
+  <div class="section__image">
+    <img src="/static/images/home/imagine.jpg">
+  </div>
+  <div class="contained">
+    <div class="section__body">Imagine if everyone could get around easily and safely, without tired, drunk or distracted driving. Time spent commuting could be time spent doing what you want to do.</div>
+  </div>
+</div><div class="partial partial--journey section section--journey section--blue">
+  <div class="section__bg"></div>
+  <div class="section__wrap grid grid--1-cols grid--valign-middle">
+    <div class="grid__item">
+      <div class="section__content contained">
+        <div class="section__title"><em>2 million miles self-driven</em></div>
+        <div class="section__body">Since we started at Google in 2009, we’ve accumulated the equivalent of over 300 years of human driving experience, largely on city streets. That’s on top of 1 billion simulated miles we drove just in 2016.</div>
+        <div class="section__cta">
+          <a class="btn btn--cta btn--cyan" href="/journey/">Our Journey</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><div class="partial partial--map section section--map">
+  <div class="grid">
+    <div class="grid__item grid__item--12-cols grid__item--7-cols--gt-lg">
+      <div class="section__image">
+        <img src="/static/images/map.png">
+      </div>
+    </div>
+    <div class="grid__item grid__item--12-cols grid__item--5-cols--gt-lg">
+      <div class="contained">
+        <div class="section__body">We continue to test and learn on real city streets across four locations in the US. We plan to bring fully self-driving cars to the world soon.</div>
+        <div class="section__cta">
+          <a class="btn btn--cta btn--cyan" href="/ontheroad/">On the Road</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="footer">
+  <div class="footer__wrap contained">
+    <a class="footer__logo" href="/"><img src="/static/images/logo_grayscale.svg"></a>
+    <div class="footer__nav grid grid--1-cols grid--2-cols--gt-xs  grid--4-cols--gt-sm">
+      <div class="footer__nav__item grid__item">
+        <a href="/faq/" >FAQ</a>
+      </div>
+      <div class="footer__nav__item grid__item">
+        <a href="/press/" >Press</a>
+      </div>
+      <div class="footer__nav__item grid__item">
+        <a href="/join/" >Join Us</a>
+      </div>
+      <div class="footer__nav__item grid__item">
+        <a href="/contact/" >Contact Us</a>
+      </div>
+      <div class="footer__nav__item grid__item">
+        <a href="/blog/" >Blog</a>
+      </div>
+      <div class="footer__nav__item grid__item">
+        <a href="https://www.youtube.com/waymo" target="_blank">YouTube</a>
+      </div>
+      <div class="footer__nav__item grid__item">
+        <a href="https://www.google.com/privacy/" target="_blank">Privacy</a>
+      </div>
+      <div class="footer__nav__item grid__item">
+        <a href="https://abc.xyz/" target="_blank">Alphabet Inc.</a>
+      </div>
+    </div>
+  </div>
+</div></body>
+<script>
+  way.main();
+</script>
+</html>
