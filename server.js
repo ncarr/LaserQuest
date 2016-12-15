@@ -7,7 +7,8 @@ var app = express();
 // This dependency is for interpreting tag data
 var bodyParser = require("body-parser");
 
-// This sets up the server to interpret tags
+// This sets up the server to interpret tags and format pages
+app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -29,10 +30,13 @@ router.get('/', function(req, res) {
     res.json({message: 'Welcome to the Laser Quest API', data: 'none'});
 });
 
-// all of our routes will be prefixed with /api/v1
+// all of our api routes will be prefixed with /api/v1
 app.use('/api/v1', router);
 app.use("/api/v1/games", require("./app/routes/games"));
 app.use("/api/v1/users", require("./app/routes/users"));
+
+app.use("/console", require("./console/server"));
+app.use("/", express.static("public"));
 
 app.listen(port);
 console.log('API currently running at http://localhost:' + port + '/api/v1');
