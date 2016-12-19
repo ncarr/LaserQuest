@@ -1,7 +1,6 @@
-body {
+h1 {
   color:white;
 }
-
 .demo-layout-transparent {
   background: url('https://uwaterloo.ca/english-language-institute/sites/ca.english-language-institute/files/uploads/images/lasertag.png') center / cover;
 }
@@ -15,6 +14,7 @@ body {
    your background is light. */
    color: white;
 }
+
 
 .mdl-layout__content {
   display:flex;
