@@ -1,33 +1,23 @@
 body {
-  font-family: "Lato", sans-serif;
-  background-color: #EEEEEE;
+  color:white;
 }
 
-.page {
-  padding: 25px;
+.demo-layout-transparent {
+  background: url('https://uwaterloo.ca/english-language-institute/sites/ca.english-language-institute/files/uploads/images/lasertag.png') center / cover;
+}
+
+.demo-layout-transparent .mdl-layout__header,
+.demo-layout-transparent .mdl-layout__drawer-button {
   display:flex;
-  flex-direction:column;
   justify-content:center;
   align-items:center;
+  /* This background is dark, so we set text to white. Use 87% black instead if
+   your background is light. */
+   color: white;
 }
 
-h1 {
-  font-family: "Orbitron", sans-serif;
-  font-size: 112px;
-}
-
-h2 {
-  font-family: "Orbitron", sans-serif;
-}
-
-p {
-  font-family: "Lato", sans-serif;
-  font-size: 34px;
-}
-
-#page-1 {
-  height: 75vh;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: auto;
+.mdl-layout__content {
+  display:flex;
+  flex-direction:column;
+  align-items: center;
 }
