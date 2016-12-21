@@ -1,3 +1,5 @@
+// Set up our .env file
+require("dotenv").config();
 // This dependency is for sending data back when people try to load websites or register tags
 var express = require("express");
 var app = express();

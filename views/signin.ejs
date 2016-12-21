@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.cyan-amber.min.css" />
+    <script defer src="https://code.getmdl.io/1.2.1/material.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300" rel="stylesheet">
+    <title>Sign in to the Laser Quest Console</title>
+    <style>
+      body, h1, h2, h3, h4, h5, h6, p, span {
+        font-family: "Open Sans";
+      }
+      h2 {
+        font-weight: 300;
+      }
+      .mdl-card {
+        padding: 25px;
+        background-color: #efefef;
+      }
+      .page {
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <% if (email) { %><div class="page" id="password-page">
+      <div>
+        <div class="title">
+          <h2>Sign in</h2>
+          <p>Enter your work account password</p>
+        </div>
+        <div class="mdl-card mdl-shadow--2dp">
+          <form action="?signin" method="post" spellcheck="false" id="password-form">
+            <div class="mdl-textfield mdl-js-textfield">
+              <% if (password === false) { %><p class="mdl-color-text--red-500">Your password was wrong.</p><% } %>
+              <input class="mdl-textfield__input" type="password" id="password" name="password" autocomplete="off" autofocus>
+              <input type="hidden" name="email" value="<%= email %>"/>
+              <label class="mdl-textfield__label" for="password">Password</label>
+            </div>
+            <input type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" value="Sign in" id="signin" />
+          </form>
+        </div>
+      </div>
+    </div>
+    <% } else { %><div class="page" id="email-page">
+      <div>
+        <div class="title">
+          <h2>Sign in</h2>
+          <p id="textlabel">Enter your work email</p>
+        </div>
+        <div class="mdl-card mdl-shadow--2dp">
+          <form action="?email" method="post" spellcheck="false" id="email-form">
+            <div class="mdl-textfield mdl-js-textfield" id="email-field">
+              <% if (email === false) { %><p class="mdl-color-text--red-500">Your email was wrong.</p><% } %>
+              <input class="mdl-textfield__input" type="email" name="email" id="email" autocomplete="off" autofocus>
+              <label class="mdl-textfield__label" for="email" id="passlabel">Email</label>
+            </div>
+            <input type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" value="Next" id="next" />
+          </form>
+        </div>
+      </div>
+    </div>
+    <% } %><script>
+      function emailChallenge(e) {
+        e.preventDefault();
+        document.getElementById('email-form').id = "password-form";
+        document.getElementById('password-form').action = "console/signin-challenge";
+        document.getElementById('password-form').removeEventListener("submit", emailChallenge);
+        passinput = document.getElementById('email').cloneNode();
+        passinput.id = "password";
+        passinput.value = "";
+        passinput.type = "password";
+        passinput.name = "password";
+        document.getElementById('email-field').appendChild(passinput);
+        document.getElementById('password').focus();
+        document.getElementById('passlabel').innerHTML = "Password";
+        document.getElementById('passlabel').htmlFor = "password";
+        document.getElementById('email').type = "hidden";
+        document.getElementById('email').className = "";
+        document.getElementById('next').value = "Sign in";
+        document.getElementById('textlabel').innerHTML = "Enter your work account password";
+      }
+      if (document.getElementById('email-form')) {
+        document.getElementById('email-form').addEventListener("submit", emailChallenge);
+      }
+    </script>
+  </body>
+</html>
