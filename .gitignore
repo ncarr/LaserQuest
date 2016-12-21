@@ -1,6 +1,9 @@
 # Development environment variables
 .env
 
+# Private keys, other configuration
+config
+
 # Logs
 logs
 *.log
