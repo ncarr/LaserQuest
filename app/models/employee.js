@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var uuid = require("uuid");
-var bcrypt = require("bcrypt");
+var bcrypt = require("bcrypt-nodejs");
 var Schema = mongoose.Schema;
 var SALT_WORK_FACTOR = 10;
 
