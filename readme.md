@@ -12,7 +12,6 @@ This is the central server for a science project where we improve the Laser Ques
   FIREBASE_PUBLIC_KEY="<GO_TO_YOUR_CLIENT_CERT_URL_THEN_PASTE_THE_CERT_WITH_YOUR_PRIVATE_KEY_ID_FROM_YOUR_FIREBASE_SERVICE_ACCOUNT_FILE_HERE>"
   FIREBASE_DB_URL="https://<YOUR_PROJECT_ID>.firebaseio.com"
   ```
-4. If you are on Windows, in an elevated PowerShell or command prompt type `npm install --global --production windows-build-tools`
-5. `npm install`
-6. To set up your first user, `npm run setup` then follow the instructions in the console
-7. To run the server, `npm start`. To use the API, you need to authenticate with the token shown after you sign in. It expires in an hour. To test just the public html pages, `npm run webserver`.
+4. `npm install`
+5. To set up your first user, `npm run setup` then follow the instructions in the console
+6. To run the server, `npm start`. To use the API, you need to authenticate with the token shown after you sign in. It expires in an hour. To test just the public html pages, `npm run webserver`.
