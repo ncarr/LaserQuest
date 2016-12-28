@@ -77,7 +77,7 @@ router.route("/:user_id/games")
     });
 router.route("/:user_id/games/:game_id")
     // Add an existing user to an existing game
-    .post(function(req, res) {
+    .put(function(req, res) {
         User.findById(req.params.user_id, function (err, user) {
             Game.findById(req.params.game_id, function(err, game) {
                 if (err)
@@ -150,12 +150,46 @@ router.route("/:user_id/tags/incoming")
                 res.send(err);
 
             res.json(tag);
-        })
-    })
-    // You were tagged and want to upload it
+        });
+    });
+router.route("/:user_id/tags/incoming/front")
+    // You were tagged in the front of the pack and want to upload it
     .post(function(req, res) {
         Tag.findById(req.body.tag_id, function (err, tag) {
             tag._receiver = req.params.user_id;
+            tag.location = "front";
+
+            // save the tag and check for errors
+            tag.save(function(err) {
+                if (err)
+                    res.send(err);
+
+                res.json(Object.assign({ message: 'Successfully tagged'}, tag.toJSON()));
+            });
+        });
+    });
+router.route("/:user_id/tags/incoming/back")
+    // You were tagged in the back of the pack and want to upload it
+    .post(function(req, res) {
+        Tag.findById(req.body.tag_id, function (err, tag) {
+            tag._receiver = req.params.user_id;
+            tag.location = "back";
+
+            // save the tag and check for errors
+            tag.save(function(err) {
+                if (err)
+                    res.send(err);
+
+                res.json(Object.assign({ message: 'Successfully tagged'}, tag.toJSON()));
+            });
+        });
+    });
+router.route("/:user_id/tags/incoming/shoulder")
+    // You were tagged on your shoulder and want to upload it
+    .post(function(req, res) {
+        Tag.findById(req.body.tag_id, function (err, tag) {
+            tag._receiver = req.params.user_id;
+            tag.location = "shoulder";
 
             // save the tag and check for errors
             tag.save(function(err) {
