@@ -35,6 +35,7 @@
           <p>Enter the code from your authenticator app</p>
         </div>
         <div class="mdl-card mdl-shadow--2dp">
+          <% if (delta === null) { %><p class="mdl-color-text--red-500">Oops, that code didn&#39;t work. Let&#39;s try this again.</p><% } else if (delta < 0) { %><p class="mdl-color-text--red-500">You entered that code too late. Let&#39;s try this again.</p><% } else if (delta > 0) { %><p class="mdl-color-text--red-500">This shouldn&#39;t be possible, but you entered that code too early. Check to see if your clock is correct and enter the new code.</p><% } %>
           <form action="mfa-challenge" method="post" spellcheck="false" id="mfa-form">
             <div class="mdl-textfield mdl-js-textfield">
               <input class="mdl-textfield__input" type="tel" id="code" name="code" autocomplete="off" maxlength="6" autofocus>

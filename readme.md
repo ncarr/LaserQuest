@@ -22,7 +22,6 @@ All API routes are prefixed with `/api/v1`, for example to create a new user, yo
 
 ### POST /users
 Creates a user
-
 ###### Fields:
   name (required): (String) The user's name
 
@@ -30,16 +29,15 @@ Creates a user
 Returns a JSON list of all users
 
 ### GET /users/:user_id
-Returns a JSON object containing a success message and a User
+Returns a User object
 
 ### PUT /users/:user_id
 Updates the user's name to the contents of the name field
-
 ###### Fields:
   name (required): (String) The user's name
 
 ### DEL /users/:user_id
-Deletes the user with the given id
+Deletes the user with the given id and removes them from any games they played
 
 ### GET /users/:user_id/games
 Returns a JSON list of all games the user has been added to
@@ -56,20 +54,72 @@ Returns a JSON list of tags the user has sent or received
 ### GET /users/:user_id/tags/outgoing
 Returns a JSON list of tags the user has sent out
 
-### POST /users/:user_id/tags/outgoing
-Send out a tag
-
-###### Fields:
-  time (required): (Number) Number of seconds between the UNIX epoch and the time you sent out the tag
-
 ### GET /users/:user_id/tags/incoming
 Returns a JSON list of tags the user has been hit by
 
-### POST /users/:user_id/tags/incoming/front
+### GET /users/:user_id/games/:game_id/tags
+Returns a JSON list of tags the user has sent or received in the game
+
+### POST /users/:user_id/games/:game_id/tags/outgoing
+Send out a tag
+###### Fields:
+  time (required): (String) ISO-8601 date string of the time the tag was sent, can be generated with `Date.prototype.toJSON()`
+
+### GET /users/:user_id/games/:game_id/tags/outgoing
+Returns a JSON list of tags the user has sent out in the game
+
+### GET /users/:user_id/games/:game_id/tags/incoming
+Returns a JSON list of tags the user has been hit by within the game
+
+### GET /users/:user_id/games/:game_id/tags/incoming/front
+Returns a JSON list of tags that hit the user in the front sensor
+
+### PUT /users/:user_id/games/:game_id/tags/incoming/front/:tag_id
 Register that you have been hit in the front
 
-### POST /users/:user_id/tags/incoming/back
+### GET /users/:user_id/games/:game_id/tags/incoming/back
+Returns a JSON list of tags that hit the user in the back sensor
+
+### PUT /users/:user_id/games/:game_id/tags/incoming/back/:tag_id
 Register that you have been hit in the back
 
-### POST /users/:user_id/tags/incoming/shoulder
+### GET /users/:user_id/games/:game_id/tags/incoming/shoulder
+Returns a JSON list of tags that hit the user in the shoulder sensor
+
+### PUT /users/:user_id/games/:game_id/tags/incoming/shoulder/:tag_id
 Register that you have been hit in the shoulder
+
+### POST /games
+Create a new game
+###### Fields:
+  start_time: (String) ISO-8601 date string of the game's start time, can be generated with `Date.prototype.toJSON()`
+  end_time: (String) ISO-8601 date string of the game's end time, can be generated with `Date.prototype.toJSON()`
+
+### GET /games
+List all games
+
+### GET /games/:game_id
+Returns the Game object with the corresponding id
+
+### PUT /games/:game_id
+Edits the Game object with the corresponding id
+###### Fields:
+  start_time: (String) ISO-8601 date string of the game's start time, can be generated with `Date.prototype.toJSON()`
+  end_time: (String) ISO-8601 date string of the game's end time, can be generated with `Date.prototype.toJSON()`
+
+### DEL /games/:game_id
+Removes all traces of the Game object with the corresponding id. Warning: it also deletes ALL tags sent in the game, disassociates all users from the game and DELETES any users who are not in any other game
+
+### GET /games/:game_id/users
+Lists all users in the game
+
+### POST /games/:game_id/users
+Creates a user and adds them to the game
+###### Fields:
+  name (required): (String) The user's name
+
+### GET /games/:game_id/tags
+Lists all tags in the game that have not been received yet
+
+### GET /games/:game_id/tags/:tag_id
+Returns a Tag object if it is in the game and has not been received

@@ -27,7 +27,7 @@ router.route("/signin-challenge")
                     if (err) console.log(err);
                     if (isMatch) {
                         if (employee.mfa) {
-                            res.render("mfa", { mfatoken: jwt.sign({data: employee._id}, process.env.MFA_KEY, { expiresIn: "5m" }) });
+                            res.render("mfa", { mfatoken: jwt.sign({data: employee._id}, process.env.MFA_KEY, { expiresIn: "5m" }), delta: 0 });
                         } else if (employee.mfa === false) {
                             admin.auth().createCustomToken(employee._id, {type: "Employee"})
                               .then(function(token) {
@@ -66,10 +66,10 @@ router.route("/mfa-challenge")
                       console.log("Error creating custom token:", error);
                     });
                 } else {
-                  res.render("mfasetup", {mfasecret: employee.mfa, delta: isValidCode.delta});
+                  res.render("mfa", { mfatoken: jwt.sign({data: employee_id.data}, process.env.MFA_KEY, { expiresIn: "5m" }), delta: isValidCode.delta });
                 }
             } else {
-              res.render("mfasetup", {mfasecret: employee.mfa, delta: null});
+              res.render("mfa", { mfatoken: jwt.sign({data: employee_id.data}, process.env.MFA_KEY, { expiresIn: "5m" }), delta: null });
             }
           });
         });
@@ -78,9 +78,6 @@ router.route("/mfa-challenge")
       .post(function (req, res) {
           jwt.verify(req.body.mfatoken, process.env.MFA_KEY, function (err, employee_id) {
             if (err) console.log(err);
-            console.log(employee_id.data.mfasecret);
-            console.log(employee_id.data.mfasecret.secret);
-            console.log(req.body.mfasecret);
             isValidCode = mfa.verifyToken(employee_id.data.mfasecret.secret, req.body.code);
             if (isValidCode) {
                 if (isValidCode.delta === 0) {
