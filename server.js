@@ -9,6 +9,7 @@ var bodyParser = require("body-parser");
 var jwt = require("jsonwebtoken");
 var serviceAccount = require(process.env.FIREBASE_KEY);
 var mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 mongoose.connect(process.env.MONGO_URL);
 
 // This sets up the server to interpret tags and format pages
@@ -26,14 +27,13 @@ router.use(function(req, res, next) {
     console.log('Request received');
     // check header or url parameters or post parameters for token
     var token = req.body.token || req.query.token || req.headers['x-access-token'];
-    console.log(token);
     // decode token
     if (token) {
       // verifies secret and checks expiry
       jwt.verify(token, process.env.FIREBASE_PUBLIC_KEY, {algorithm: "RS256"}, function(err, decoded) {
         if (err) {
           console.log(err);
-          return res.json({ success: false, message: 'Failed to authenticate token.' });
+          return res.status(403).json({ success: false, message: 'Failed to authenticate token.' });
         } else {
           // if everything is good, save to request for use in other routes
           req.decoded = decoded;
@@ -43,7 +43,7 @@ router.use(function(req, res, next) {
     } else {
       // if there is no token
       // return an error
-      return res.status(403).send({
+      return res.status(403).json({
           success: false,
           message: 'No token provided.'
       });
@@ -57,9 +57,21 @@ router.get('/', function(req, res) {
 app.use('/api/v1', router);
 app.use("/api/v1/games", require("./app/routes/games"));
 app.use("/api/v1/users", require("./app/routes/users"));
+app.use("/api/v1", validationErrorHandler, errorHandler);
 
 app.use("/console", require("./console/server"));
 app.use("/", express.static("public"));
 
 app.listen(port);
 console.log('API currently running at http://localhost:' + port + '/api/v1');
+
+function validationErrorHandler(err, req, res, next) {
+    if (res.headersSent) return next(err);
+    if (err.name != "ValidationError") return next(err);
+    res.status(400).json({ success: false, message: "Fields either had invalid values or required fields were left out" });
+}
+function errorHandler(err, req, res, next) {
+    if (res.headersSent) return next(err);
+    console.error(err);
+    res.status(500).json({ success: false, message: err.message });
+}

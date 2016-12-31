@@ -34,7 +34,7 @@
           <h2>Two-Step Verification Setup</h2>
         </div>
         <div class="mdl-card mdl-shadow--2dp">
-          <% if (delta === null) { %><p class="mdl-color-text--red-500">Oops, that code didn&#39;t work. Let&#39;s try this again.</p><% } else if (delta < 0) { %><p class="mdl-color-text--red-500">This shouldn&#39;t be possible, but you entered that code too early. Check to see if your clock is correct and re-add this account.</p><% } else if (delta > 0) { %><p class="mdl-color-text--red-500">You entered that code too late. Please re-add this account and try again.</p><% } %>
+          <% if (delta === null) { %><p class="mdl-color-text--red-500">Oops, that code didn&#39;t work. Let&#39;s try this again.</p><% } else if (delta < 0) { %><p class="mdl-color-text--red-500">You entered that code too late. Let&#39;s try this again.</p><% } else if (delta > 0) { %><p class="mdl-color-text--red-500">This shouldn&#39;t be possible, but you entered that code too early. Check to see if your clock is correct and enter the new code.</p><% } %>
           <ol>
               <li>Get a two-factor authenticator like <a href="https://www.authy.com/app/mobile/">Authy</a></li>
               <li>Scan this code, <a href="<%- mfasecret.uri %>">follow this url</a> or manually enter the code: <%= mfasecret.secret %></li>
