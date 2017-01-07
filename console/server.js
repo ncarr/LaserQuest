@@ -26,20 +26,22 @@ router.route("/signin-challenge")
                 employee.comparePassword(req.body.password, function(err, isMatch) {
                     if (err) console.log(err);
                     if (isMatch) {
-                        if (employee.mfa) {
-                            res.render("mfa", { mfatoken: jwt.sign({data: employee._id}, process.env.MFA_KEY, { expiresIn: "5m" }), delta: 0 });
-                        } else if (employee.mfa === false) {
-                            admin.auth().createCustomToken(employee._id, {type: "Employee"})
-                              .then(function(token) {
-                                res.render("console", { token: token });
-                              })
-                              .catch(function(error) {
-                                console.log("Error creating custom token:", error);
-                              });
-                        } else {
-                            var mfaSecret = mfa.generateSecret({name: 'Laser Quest', account: req.body.email});
-                            res.render("mfasetup", { mfatoken: jwt.sign({data: {id: employee._id, mfasecret: mfaSecret}}, process.env.MFA_KEY, { expiresIn: "1h" }), mfasecret: mfaSecret, delta: 0 });
-                        }
+                        employee.checkMfa(function (err, hasMfa) {
+                            if (hasMfa) {
+                                res.render("mfa", { mfatoken: jwt.sign({data: employee._id}, process.env.MFA_KEY, { expiresIn: "5m" }), delta: 0 });
+                            } else if (hasMfa === false) {
+                                admin.auth().createCustomToken(employee._id, {type: "Employee"})
+                                  .then(function(token) {
+                                    res.render("console", { token: token });
+                                  })
+                                  .catch(function(error) {
+                                    console.log("Error creating custom token:", error);
+                                  });
+                            } else {
+                                var mfaSecret = mfa.generateSecret({name: 'Laser Quest', account: req.body.email});
+                                res.render("mfasetup", { mfatoken: jwt.sign({data: {id: employee._id, mfasecret: mfaSecret}}, process.env.MFA_KEY, { expiresIn: "1h" }), mfasecret: mfaSecret, delta: 0 });
+                            }
+                        });
                     } else {
                       res.render("signin", {email: req.body.email, password: false});
                     }
@@ -55,22 +57,23 @@ router.route("/mfa-challenge")
           if (err) console.log(err);
           Employee.findById(employee_id.data, function (err, employee) {
             if (err) console.log(err);
-            isValidCode = mfa.verifyToken(employee.mfa, req.body.code);
-            if (isValidCode) {
-                if (isValidCode.delta === 0) {
-                  admin.auth().createCustomToken(employee_id.data, {type: "Employee"})
-                    .then(function(token) {
-                      res.render("console", { token: token });
-                    })
-                    .catch(function(error) {
-                      console.log("Error creating custom token:", error);
-                    });
-                } else {
-                  res.render("mfa", { mfatoken: jwt.sign({data: employee_id.data}, process.env.MFA_KEY, { expiresIn: "5m" }), delta: isValidCode.delta });
-                }
-            } else {
-              res.render("mfa", { mfatoken: jwt.sign({data: employee_id.data}, process.env.MFA_KEY, { expiresIn: "5m" }), delta: null });
-            }
+            employee.verifyToken(req.body.code, function (err, isValidCode) {
+              if (isValidCode) {
+                  if (isValidCode.delta === 0) {
+                    admin.auth().createCustomToken(employee_id.data, {type: "Employee"})
+                      .then(function(token) {
+                        res.render("console", { token: token });
+                      })
+                      .catch(function(error) {
+                        console.log("Error creating custom token:", error);
+                      });
+                  } else {
+                    res.render("mfa", { mfatoken: jwt.sign({data: employee_id.data}, process.env.MFA_KEY, { expiresIn: "5m" }), delta: isValidCode.delta });
+                  }
+              } else {
+                res.render("mfa", { mfatoken: jwt.sign({data: employee_id.data}, process.env.MFA_KEY, { expiresIn: "5m" }), delta: null });
+              }
+            });
           });
         });
     });
@@ -83,8 +86,7 @@ router.route("/mfa-challenge")
                 if (isValidCode.delta === 0) {
                   Employee.findById(employee_id.data.id, function (err, employee) {
                     if (err) console.log(err);
-                    employee.mfa = employee_id.data.mfasecret.secret;
-                    employee.save(function (err) {
+                    employee.setMfa(employee_id.data.mfasecret.secret, function (err) {
                       admin.auth().createCustomToken(employee_id.data.id, {type: "Employee"})
                         .then(function(token) {
                           res.render("console", { token: token });
@@ -108,8 +110,7 @@ router.route("/mfa-challenge")
             if (err) console.log(err);
             Employee.findById(employee_id.data, function (err, emp) {
               if (err) console.log(err);
-              employee.mfa = false;
-              employee.save(function (err) {
+              employee.setMfa(false, function (err) {
                 if (err) console.log(err);
                 admin.auth().createCustomToken(employee_id.data, {type: "Employee"})
                   .then(function(token) {

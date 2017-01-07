@@ -4,6 +4,7 @@ require("dotenv").config();
 // This dependency is for sending data back when people try to load websites or register tags
 var express = require("express");
 var app = express();
+var expressWs = require("express-ws")(app);
 // This dependency is for interpreting tag data
 var bodyParser = require("body-parser");
 var jwt = require("jsonwebtoken");
@@ -32,7 +33,6 @@ router.use(function(req, res, next) {
       // verifies secret and checks expiry
       jwt.verify(token, process.env.FIREBASE_PUBLIC_KEY, {algorithm: "RS256"}, function(err, decoded) {
         if (err) {
-          console.log(err);
           return res.status(403).json({ success: false, message: 'Failed to authenticate token.' });
         } else {
           // if everything is good, save to request for use in other routes
@@ -55,8 +55,8 @@ router.get('/', function(req, res) {
 
 // all of our api routes will be prefixed with /api/v1
 app.use('/api/v1', router);
-app.use("/api/v1/games", require("./app/routes/games"));
-app.use("/api/v1/users", require("./app/routes/users"));
+app.use("/api/v1/locations", require("./app/routes/locations"));
+app.use("/api/v1/employees", require("./app/routes/employees"));
 app.use("/api/v1", validationErrorHandler, errorHandler);
 
 app.use("/console", require("./console/server"));
@@ -70,8 +70,13 @@ function validationErrorHandler(err, req, res, next) {
     if (err.name != "ValidationError") return next(err);
     res.status(400).json({ success: false, message: "Fields either had invalid values or required fields were left out" });
 }
+function customErrorHandler(err, req, res, next) {
+    if (res.headersSent) return next(err);
+    if (err.name != "LaserQuestError") return next(err);
+    res.status(400).json({ success: false, message: err.message });
+}
 function errorHandler(err, req, res, next) {
     if (res.headersSent) return next(err);
-    console.error(err);
+    console.error(err.stack);
     res.status(500).json({ success: false, message: err.message });
 }
