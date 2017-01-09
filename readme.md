@@ -1,50 +1,103 @@
 # Laser Quest
-This is the central server for a science project where we improve the Laser Quest experience.
 
-## Installing and running
-1. Clone from GitHub
-2. Create a Firebase project, create a service account, make a new folder called `config` in this folder and put the JSON file for your service account's private key in there
-3. Set up your `.env` file to match this format, replacing placeholders in angle brackets:
-  ```
-  MONGO_URL=mongodb://<YOUR_MONGO_URL>
-  FIREBASE_CONFIG="var config = {apiKey: '<YOUR_FIREBASE_API_KEY', authDomain: '<YOUR_PROJECT_ID>.firebaseapp.com', databaseURL: 'https://<YOUR_PROJECT_ID>.firebaseio.com', storageBucket: '<YOUR_PROJECT_ID>.appspot.com', messagingSenderId: '<YOUR_MESSAGING_SENDER_ID>' };"
-  MFA_KEY="-----BEGIN RSA PRIVATE KEY-----<A_2048_BIT_RSA_PRIVATE_KEY>-----END RSA PRIVATE KEY-----\n"
-  FIREBASE_KEY="./config/<PATH_TO_YOUR_FIREBASE_SERVICE_ACCOUNT_PRIVATE_KEY>"
-  FIREBASE_PUBLIC_KEY="<GO_TO_YOUR_CLIENT_CERT_URL_THEN_PASTE_THE_CERT_WITH_YOUR_PRIVATE_KEY_ID_FROM_YOUR_FIREBASE_SERVICE_ACCOUNT_FILE_HERE>"
-  FIREBASE_DB_URL="https://<YOUR_PROJECT_ID>.firebaseio.com"
-  ```
-4. `npm install`
-5. To set up your first user, `npm run setup` then follow the instructions in the console
-6. To run the server, `npm start`. To use the API, you need to authenticate with the token shown after you sign in. It expires in an hour. To test just the public html pages, `npm run webserver`.
+> The server for a science project to improve the Laser Quest experience
+
+## About
+
+This project uses [Feathers](http://feathersjs.com). An open source web framework for building modern real-time applications.
+
+## Getting Started
+
+Getting up and running is as easy as 1, 2, 3.
+
+1. Make sure you have [NodeJS](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed.
+2. Install your dependencies
+
+    ```
+    cd path/to/laser-quest; npm install
+    ```
+
+3. Fill in the placeholder fields in both files in the `config` directory
+4. Run `npm run setup` and follow the commands to set up your first user account.
+5. Start your app
+
+    ```
+    npm start
+    ```
+
+## Testing
+
+Simply run `npm test` and all your tests in the `test/` directory will be run.
+
+## Scaffolding
+
+Feathers has a powerful command line interface. Here are a few things it can do:
+
+```
+$ npm install -g feathers-cli             # Install Feathers CLI
+
+$ feathers generate service               # Generate a new Service
+$ feathers generate hook                  # Generate a new Hook
+$ feathers generate model                 # Generate a new Model
+$ feathers help                           # Show all commands
+```
+
+## Help
+
+For more information on all the things you can do with Feathers visit [docs.feathersjs.com](http://docs.feathersjs.com).
+
+## Changelog
+
+__0.1.0__
+
+- Initial release
+
+## License
+
+Copyright (c) 2016
+
+Licensed under the [MIT license](LICENSE).
 
 ## API Documentation
-All API routes are prefixed with `/api/v1`, for example to create a new user, you would send a POST request to `localhost:8080/api/v1/users`. All requests MUST be authenticated with a token signed with the Firebase private key. This token can be given as a `token` query parameter, `token` field or `x-access-token` header.
+As an example, to open a new franchise, you would send a POST request to `localhost:3030/locations`. All requests MUST be authenticated with a token you can get by sending a POST request to `/auth/local` with properly filled out email and password fields in the request body. This token can be given as an `Authorization` header, `token` field in a request body or `token` query parameter.
 
-### POST /employees
+### POST /users
 Hires a new employee
 ###### Fields:
   name (required): (String) Their name
-  email (required): (String) Their laserquest.com email address
-  password (required): (String) Their password in plain text. Ensure this route is encrypted before sending a password. The database will hash it before saving and hide the hash in further responses, so do not expect to get it back.
-  mfa: (String) Their 2 factor authentication secret. Ensure this route is encrypted before sending it as it is as sensitive as a password. The database will hide this property in further responses, so do not expect to get it back.
-  \_location: (String) The location the employee will work at
 
-### GET /employees
+  email (required): (String) Their laserquest.com email address
+
+  password (required): (String) Their password in plain text. Ensure this route is encrypted before sending a password. The database will hash it before saving and hide the hash in further responses, so do not expect to get it back.
+
+  location (required): (String) The location the employee will work at
+
+### GET /users
 Returns a JSON list of all employees
 
-### GET /employees/:id
+### GET /users/:id
 Returns a Location object
 
-### PUT /employees/:id
-Updates the employee's properties
+### PUT /users/:id
+Replaces the employee with the data you send
 ###### Fields:
   name: (String) Their name
   email: (String) Their laserquest.com email address
   password: (String) Their password in plain text. Ensure this route is encrypted before sending a password. The database will hash it before saving and hide the hash in further responses, so do not expect to get it back.
-  mfa: (String) Their 2 factor authentication secret. Ensure this route is encrypted before sending it as it is as sensitive as a password. The database will hide this property in further responses, so do not expect to get it back.
-  \_location: (String) The location the employee will work at
+  location: (String) The location the employee will work at
 
-### DEL /employees/:id
+### PATCH /users/:id
+Updates each field you send with the values you send
+###### Fields:
+  name: (String) Their name
+
+  email: (String) Their laserquest.com email address
+
+  password: (String) Their password in plain text. Ensure this route is encrypted before sending a password. The database will hash it before saving and hide the hash in further responses, so do not expect to get it back.
+
+  location: (String) The location the employee will work at
+
+### DEL /users/:id
 Deletes the employee
 
 ### POST /locations
@@ -56,143 +109,86 @@ Opens up a new Laser Quest franchise
 Returns a JSON list of all locations
 
 ### GET /locations/:id
-Returns an Employee object
+Returns a Location object
 
-### PUT /locations/:id
+### PUT /locations/:id or PATCH /locations/:id
 Updates the location's address
 ###### Fields:
-  name (required): (String) The user's name
+  name (required): (String) The location's name
 
 ### DEL /locations/:id
-Deletes the location, along with ANY DATA EVER COLLECTED while it was open. Users, games, tags, etc. are destroyed. Employees will have to change their work location the next time they sign back in
+Deletes the location, along with ANY DATA EVER COLLECTED while it was open. Players, games, tags, etc. are destroyed. Employees will have to change their work location the next time they sign back in
 
-
-### POST /locations/:location_id/employees
-Hires a new employee. Do not include the \_location field as it will be pre-filled from the location_id parameter
+### POST /players
+Creates a player
 ###### Fields:
-  name (required): (String) Their name
-  email (required): (String) Their laserquest.com email address
-  password (required): (String) Their password in plain text. Ensure this route is encrypted before sending a password. The database will hash it before saving and hide the hash in further responses, so do not expect to get it back.
-  mfa: (String) Their 2 factor authentication secret. Ensure this route is encrypted before sending it as it is as sensitive as a password. The database will hide this property in further responses, so do not expect to get it back.
+  name (required): (String) The player's name
 
-### GET /locations/:location_id/employees
-Returns a JSON list of all employees
+  location (required): (String) The id of the Location they are in
 
-### GET /locations/:location_id/employees/:id
-Returns an Employee object
+  games (optional): A list of all game ids the player is in
 
-### PUT /locations/:location_id/employees/:id
-Updates the employee's properties
+### GET /players
+Returns a JSON list of all players
+
+### GET /players/:id
+Returns a Player object
+
+### PATCH /players/:id
+Updates the player's name to the contents of the name field
 ###### Fields:
-  name: (String) Their name
-  email: (String) Their laserquest.com email address
-  password: (String) Their password in plain text. Ensure this route is encrypted before sending a password. The database will hash it before saving and hide the hash in further responses, so do not expect to get it back.
-  mfa: (String) Their 2 factor authentication secret. Ensure this route is encrypted before sending it as it is as sensitive as a password. The database will hide this property in further responses, so do not expect to get it back.
-  \_location: (String) The location the employee will work at
+  name (required): (String) The player's name
+  games (optional): A list of all game ids the player is in
 
-### DEL /locations/:location_id/employees/:id
-Deletes the employee
+### DEL /players/:id
+Deletes the player with the given id and removes them from any games they played
 
-### POST /locations/:location_id/users
-Creates a user
-###### Fields:
-  name (required): (String) The user's name
-
-### GET /locations/:location_id/users
-Returns a JSON list of all users
-
-### GET /locations/:location_id/users/:id
-Returns a User object
-
-### PUT /locations/:location_id/users/:id
-Updates the user's name to the contents of the name field
-###### Fields:
-  name (required): (String) The user's name
-
-### DEL /locations/:location_id/users/:id
-Deletes the user with the given id and removes them from any games they played
-
-### GET /locations/:location_id/users/:id/games
-Returns a JSON list of all games the user has been added to
-
-### PUT /locations/:location_id/users/:id/games/:game_id
-Add an existing user to an existing game
-
-### DEL /locations/:location_id/users/:id/games/:game_id
-Disassociate the user and the game. The user and the game will still exist.
-
-### GET /locations/:location_id/users/:id/tags
-Returns a JSON list of tags the user has sent or received
-
-### GET /locations/:location_id/users/:id/tags/outgoing
-Returns a JSON list of tags the user has sent out
-
-### GET /locations/:location_id/users/:id/tags/incoming
-Returns a JSON list of tags the user has been hit by
-
-### GET /locations/:location_id/users/:id/games/:game_id/tags
-Returns a JSON list of tags the user has sent or received in the game
-
-### POST /locations/:location_id/users/:id/games/:game_id/tags/outgoing
+### POST /tags
 Send out a tag
 ###### Fields:
+  sender (required): (String) The id of the player that shot it
+
+  game (required): (String) The id of the game it was shot in
+
   time (required): (String) ISO-8601 date string of the time the tag was sent, can be generated with `Date.prototype.toJSON()`
 
-### GET /locations/:location_id/users/:id/games/:game_id/tags/outgoing
-Returns a JSON list of tags the user has sent out in the game
+### GET /tags
+List all tags/laser beams/shots that have been taken
 
-### GET /locations/:location_id/users/:id/games/:game_id/tags/incoming
-Returns a JSON list of tags the user has been hit by within the game
+### GET /tags/:id
+Returns a Tag object
 
-### GET /locations/:location_id/users/:id/games/:game_id/tags/incoming/front
-Returns a JSON list of tags that hit the user in the front sensor
+### PATCH /tags/:id
+Updates a tag
 
-### PUT /locations/:location_id/users/:id/games/:game_id/tags/incoming/front/:tag_id
-Register that you have been hit in the front
+###### Fields:
+  receiver: (String) The id of the player who was shot by it
 
-### GET /locations/:location_id/users/:id/games/:game_id/tags/incoming/back
-Returns a JSON list of tags that hit the user in the back sensor
+  sensor: (String) Either `front`, `back` or `shoulder`. The sensor the laser hit.
 
-### PUT /locations/:location_id/users/:id/games/:game_id/tags/incoming/back/:tag_id
-Register that you have been hit in the back
-
-### GET /locations/:location_id/users/:id/games/:game_id/tags/incoming/shoulder
-Returns a JSON list of tags that hit the user in the shoulder sensor
-
-### PUT /locations/:location_id/users/:id/games/:game_id/tags/incoming/shoulder/:tag_id
-Register that you have been hit in the shoulder
-
-### POST /locations/:location_id/games
+### POST /games
 Create a new game
 ###### Fields:
+  location (required): (String) The id of the location the game will take place in
+
   start_time: (String) ISO-8601 date string of the game's start time, can be generated with `Date.prototype.toJSON()`
+
   end_time: (String) ISO-8601 date string of the game's end time, can be generated with `Date.prototype.toJSON()`
 
-### GET /locations/:location_id/games
+### GET /games
 List all games
 
-### GET /locations/:location_id/games/:id
+### GET /games/:id
 Returns the Game object with the corresponding id
 
-### PUT /locations/:location_id/games/:id
+### PATCH /games/:id
 Edits the Game object with the corresponding id
 ###### Fields:
+  players: A list of all players in the game
+
   start_time: (String) ISO-8601 date string of the game's start time, can be generated with `Date.prototype.toJSON()`
+  
   end_time: (String) ISO-8601 date string of the game's end time, can be generated with `Date.prototype.toJSON()`
 
-### DEL /locations/:location_id/games/:id
-Removes all traces of the Game object with the corresponding id. Warning: it also deletes ALL tags sent in the game, disassociates all users from the game and DELETES any users who are not in any other game
-
-### GET /locations/:location_id/games/:id/users
-Lists all users in the game
-
-### POST /locations/:location_id/games/:id/users
-Creates a user and adds them to the game
-###### Fields:
-  name (required): (String) The user's name
-
-### GET /locations/:location_id/games/:id/tags
-Lists all tags in the game that have not been received yet
-
-### GET /locations/:location_id/games/:id/tags/:tag_id
-Returns a Tag object if it is in the game and has not been received
+### DEL /games/:id
+Removes all traces of the Game object with the corresponding id. Warning: it also deletes ALL tags sent in the game, disassociates all Players from the game and DELETES any players who are not in any other game

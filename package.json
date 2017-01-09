@@ -1,43 +1,53 @@
 {
-  "name": "laserquest",
-  "version": "1.0.0",
-  "description": "The backend and website for a Laser Quest science project",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js",
-    "web": "node webserver.js",
-    "setup": "node setup.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ncarr/LaserQuest.git"
-  },
+  "name": "laser-quest",
+  "description": "The server for a science project to improve the Laser Quest experience",
+  "version": "0.0.0",
+  "homepage": "",
+  "main": "src/",
   "keywords": [
-    "laser",
-    "quest",
-    "laserquest",
-    "express"
+    "feathers"
   ],
-  "author": "Nicholas Carr, Misha Larionov, Julia Collins",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/ncarr/LaserQuest/issues"
+  "license": "MIT",
+  "repository": {},
+  "author": {},
+  "contributors": [],
+  "bugs": {},
+  "engines": {
+    "node": ">= 0.12.0"
   },
-  "homepage": "https://github.com/ncarr/LaserQuest#readme",
+  "scripts": {
+    "test": "npm run jshint && npm run mocha",
+    "jshint": "jshint src/. test/. --config",
+    "start": "node src/",
+    "setup": "node src/setup.js",
+    "mocha": "mocha test/ --recursive"
+  },
   "dependencies": {
-    "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.15.2",
-    "dotenv": "^2.0.0",
-    "ejs": "^2.5.5",
-    "express": "^4.14.0",
-    "express-ws": "^2.0.0",
-    "firebase-admin": "^4.0.4",
-    "jsonwebtoken": "^7.2.1",
-    "mongoose": "^4.7.2",
-    "mongoose-hidden": "^0.9.1",
-    "node-2fa": "^1.1.1",
+    "compression": "^1.6.2",
+    "cors": "^2.8.1",
+    "feathers": "^2.0.3",
+    "feathers-authentication": "^0.7.12",
+    "feathers-authentication-local": "^0.3.2",
+    "feathers-configuration": "^0.3.3",
+    "feathers-errors": "^2.5.0",
+    "feathers-hooks": "^1.7.1",
+    "feathers-mongoose": "^3.6.1",
+    "feathers-primus": "^1.4.1",
+    "feathers-rest": "^1.6.0",
+    "feathers-socketio": "^1.4.2",
+    "mongoose": "^4.7.6",
+    "passport": "^0.3.2",
+    "passport-totp": "0.0.2",
     "prompt": "^1.0.0",
-    "uuid": "^3.0.1"
+    "serve-favicon": "^2.3.2",
+    "uuid": "^3.0.1",
+    "winston": "^2.3.0",
+    "ws": "^1.1.1"
+  },
+  "devDependencies": {
+    "jshint": "^2.9.4",
+    "mocha": "^3.2.0",
+    "request": "^2.79.0"
   }
 }
